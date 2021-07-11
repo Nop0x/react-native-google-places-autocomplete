@@ -537,10 +537,15 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
       );
 
       request.withCredentials = requestShouldUseWithCredentials();
-      setRequestHeaders(request, getRequestHeaders(props.requestUrl));
       if (props.headerFunction) {
-        props.headerFunction(request, request._url, url);
+        props.requestUrl.headers['hmac'] = props.headerFunction(
+          request,
+          request._url,
+          url,
+        );
       }
+      setRequestHeaders(request, getRequestHeaders(props.requestUrl));
+
       request.send();
     } else {
       _results = [];
