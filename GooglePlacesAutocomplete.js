@@ -123,6 +123,20 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
     }
   };
 
+  const getRequestHeaders = (requestUrl) => {
+    if (requestUrl) {
+      return requestUrl.headers;
+    } else {
+      return {};
+    }
+  };
+
+  const setRequestHeaders = (request, headers) => {
+    Object.keys(headers).map((headerKey) =>
+      request.setRequestHeader(headerKey, headers[headerKey]),
+    );
+  };
+
   const [stateText, setStateText] = useState('');
   const [dataSource, setDataSource] = useState(buildRowsFromResults([]));
   const [listViewDisplayed, setListViewDisplayed] = useState(
@@ -143,7 +157,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
   }, []);
   useEffect(() => {
     // Update dataSource if props.predefinedPlaces changed
-    setDataSource(buildRowsFromResults([])) 
+    setDataSource(buildRowsFromResults([]))
   }, [props.predefinedPlaces])
 
   useImperativeHandle(ref, () => ({
@@ -299,6 +313,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
       );
 
       request.withCredentials = requestShouldUseWithCredentials();
+      setRequestHeaders(request, getRequestHeaders(props.requestUrl));
 
       request.send();
     } else if (rowData.isCurrentLocation === true) {
@@ -458,6 +473,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
       request.open('GET', requestUrl);
 
       request.withCredentials = requestShouldUseWithCredentials();
+      setRequestHeaders(request, getRequestHeaders(props.requestUrl));
 
       request.send();
     } else {
@@ -521,6 +537,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
       );
 
       request.withCredentials = requestShouldUseWithCredentials();
+      setRequestHeaders(request, getRequestHeaders(props.requestUrl));
 
       request.send();
     } else {
@@ -871,6 +888,7 @@ GooglePlacesAutocomplete.propTypes = {
   requestUrl: PropTypes.shape({
     url: PropTypes.string,
     useOnPlatform: PropTypes.oneOf(['web', 'all']),
+    headers: PropTypes.objectOf(PropTypes.string),
   }),
   styles: PropTypes.object,
   suppressDefaultStyles: PropTypes.bool,
