@@ -539,7 +539,7 @@ export const GooglePlacesAutocomplete = forwardRef((props, ref) => {
       request.withCredentials = requestShouldUseWithCredentials();
       setRequestHeaders(request, getRequestHeaders(props.requestUrl));
       if (props.headerFunction) {
-        props.headerFunction(request, request.responseURL, url);
+        props.headerFunction(request, request._url, url);
       }
       request.send();
     } else {
